@@ -67,7 +67,7 @@ except Exception as error:
 data = "# TYPE restic_last_snapshot counter\n"
 for snapshot in json_object:
     paths = ",".join(sorted(snapshot["paths"]))
-    time = datetime.fromisoformat(snapshot["time"]).timestamp()
+    time = datetime.fromisoformat(snapshot["time"].split('.')[0]).timestamp()
     if snapshot["tags"]:
         tags = ",".join(sorted(snapshot["tags"]))
         data += f'restic_last_snapshot{{hostname="{snapshot["hostname"]}",username="{snapshot["username"]}",paths="{paths}",tags="{tags}"}} {time}\n'
