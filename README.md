@@ -31,12 +31,15 @@ groups:
     rules:
       - alert: ResticOutdatedBackup
         annotations:
-          summary: Restic {{ $labels.hostname }} / {{ $labels.paths }} backup is outdated
+          summary: Restic backup on {{ $labels.hostname }} is outdated
           description: |
-            Restic backup is outdated
-            VALUE = {{ $value | humanizeTimestamp }}
-            LABELS = {{ $labels }}
-        expr: time() - restic_last_snapshot > 86400  # 86400 = 24 hours
+            Restic backup on {{ $labels.hostname }} is outdated:
+            Last backup: {{ $value | humanizeTimestamp }}
+            User: {{ $labels.username }}
+            Paths: {{ $labels.paths }}
+            Tags: {{ $labels.tags }}
+        # 86400 = 24 hours
+        expr: time() - restic_last_snapshot{hostname!="ares"} > 86400
         for: 24h
         labels:
           severity: critical
